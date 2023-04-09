@@ -26,14 +26,13 @@ import type {
   TypedListener,
   OnEvent,
   PromiseOrValue,
-} from "../common";
+} from "../../common";
 
 export interface TokenStakingContractInterface extends utils.Interface {
   functions: {
     "BURNER_ROLE()": FunctionFragment;
     "DEFAULT_ADMIN_ROLE()": FunctionFragment;
-    "MATIC_STAKER_ROLE()": FunctionFragment;
-    "R_STAKER_ROLE()": FunctionFragment;
+    "STAKER_ROLE()": FunctionFragment;
     "allowance(address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
@@ -47,11 +46,11 @@ export interface TokenStakingContractInterface extends utils.Interface {
     "increaseAllowance(address,uint256)": FunctionFragment;
     "name()": FunctionFragment;
     "numberOfStakers()": FunctionFragment;
+    "r_token()": FunctionFragment;
     "renounceRole(bytes32,address)": FunctionFragment;
-    "restakeR()": FunctionFragment;
+    "restake()": FunctionFragment;
     "revokeRole(bytes32,address)": FunctionFragment;
-    "stakeMatic()": FunctionFragment;
-    "stakeR()": FunctionFragment;
+    "stake()": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
     "totalAmountStaked()": FunctionFragment;
@@ -59,8 +58,7 @@ export interface TokenStakingContractInterface extends utils.Interface {
     "totalTokenSupply()": FunctionFragment;
     "transfer(address,uint256)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
-    "unstakeMatic(uint256)": FunctionFragment;
-    "unstakeR()": FunctionFragment;
+    "unstake(uint256)": FunctionFragment;
     "userInfo(address)": FunctionFragment;
     "viewRewards()": FunctionFragment;
   };
@@ -69,8 +67,7 @@ export interface TokenStakingContractInterface extends utils.Interface {
     nameOrSignatureOrTopic:
       | "BURNER_ROLE"
       | "DEFAULT_ADMIN_ROLE"
-      | "MATIC_STAKER_ROLE"
-      | "R_STAKER_ROLE"
+      | "STAKER_ROLE"
       | "allowance"
       | "approve"
       | "balanceOf"
@@ -84,11 +81,11 @@ export interface TokenStakingContractInterface extends utils.Interface {
       | "increaseAllowance"
       | "name"
       | "numberOfStakers"
+      | "r_token"
       | "renounceRole"
-      | "restakeR"
+      | "restake"
       | "revokeRole"
-      | "stakeMatic"
-      | "stakeR"
+      | "stake"
       | "supportsInterface"
       | "symbol"
       | "totalAmountStaked"
@@ -96,8 +93,7 @@ export interface TokenStakingContractInterface extends utils.Interface {
       | "totalTokenSupply"
       | "transfer"
       | "transferFrom"
-      | "unstakeMatic"
-      | "unstakeR"
+      | "unstake"
       | "userInfo"
       | "viewRewards"
   ): FunctionFragment;
@@ -111,11 +107,7 @@ export interface TokenStakingContractInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "MATIC_STAKER_ROLE",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "R_STAKER_ROLE",
+    functionFragment: "STAKER_ROLE",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -164,20 +156,17 @@ export interface TokenStakingContractInterface extends utils.Interface {
     functionFragment: "numberOfStakers",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "r_token", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "renounceRole",
     values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
   ): string;
-  encodeFunctionData(functionFragment: "restakeR", values?: undefined): string;
+  encodeFunctionData(functionFragment: "restake", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "revokeRole",
     values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
   ): string;
-  encodeFunctionData(
-    functionFragment: "stakeMatic",
-    values?: undefined
-  ): string;
-  encodeFunctionData(functionFragment: "stakeR", values?: undefined): string;
+  encodeFunctionData(functionFragment: "stake", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
     values: [PromiseOrValue<BytesLike>]
@@ -208,10 +197,9 @@ export interface TokenStakingContractInterface extends utils.Interface {
     ]
   ): string;
   encodeFunctionData(
-    functionFragment: "unstakeMatic",
+    functionFragment: "unstake",
     values: [PromiseOrValue<BigNumberish>]
   ): string;
-  encodeFunctionData(functionFragment: "unstakeR", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "userInfo",
     values: [PromiseOrValue<string>]
@@ -230,11 +218,7 @@ export interface TokenStakingContractInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "MATIC_STAKER_ROLE",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "R_STAKER_ROLE",
+    functionFragment: "STAKER_ROLE",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "allowance", data: BytesLike): Result;
@@ -265,14 +249,14 @@ export interface TokenStakingContractInterface extends utils.Interface {
     functionFragment: "numberOfStakers",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "r_token", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceRole",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "restakeR", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "restake", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "revokeRole", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "stakeMatic", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "stakeR", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "stake", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "supportsInterface",
     data: BytesLike
@@ -295,11 +279,7 @@ export interface TokenStakingContractInterface extends utils.Interface {
     functionFragment: "transferFrom",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "unstakeMatic",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "unstakeR", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "unstake", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "userInfo", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "viewRewards",
@@ -311,18 +291,18 @@ export interface TokenStakingContractInterface extends utils.Interface {
     "RoleAdminChanged(bytes32,bytes32,bytes32)": EventFragment;
     "RoleGranted(bytes32,address,address)": EventFragment;
     "RoleRevoked(bytes32,address,address)": EventFragment;
-    "StakeMatic(uint256,address)": EventFragment;
+    "Stake(uint256,address)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
-    "UnstakeMatic(uint256,address)": EventFragment;
+    "Unstake(uint256,address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RoleAdminChanged"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RoleGranted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RoleRevoked"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "StakeMatic"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Stake"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "UnstakeMatic"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Unstake"): EventFragment;
 }
 
 export interface ApprovalEventObject {
@@ -374,16 +354,13 @@ export type RoleRevokedEvent = TypedEvent<
 
 export type RoleRevokedEventFilter = TypedEventFilter<RoleRevokedEvent>;
 
-export interface StakeMaticEventObject {
+export interface StakeEventObject {
   _amount: BigNumber;
   _user: string;
 }
-export type StakeMaticEvent = TypedEvent<
-  [BigNumber, string],
-  StakeMaticEventObject
->;
+export type StakeEvent = TypedEvent<[BigNumber, string], StakeEventObject>;
 
-export type StakeMaticEventFilter = TypedEventFilter<StakeMaticEvent>;
+export type StakeEventFilter = TypedEventFilter<StakeEvent>;
 
 export interface TransferEventObject {
   from: string;
@@ -397,16 +374,13 @@ export type TransferEvent = TypedEvent<
 
 export type TransferEventFilter = TypedEventFilter<TransferEvent>;
 
-export interface UnstakeMaticEventObject {
+export interface UnstakeEventObject {
   _amount: BigNumber;
   _user: string;
 }
-export type UnstakeMaticEvent = TypedEvent<
-  [BigNumber, string],
-  UnstakeMaticEventObject
->;
+export type UnstakeEvent = TypedEvent<[BigNumber, string], UnstakeEventObject>;
 
-export type UnstakeMaticEventFilter = TypedEventFilter<UnstakeMaticEvent>;
+export type UnstakeEventFilter = TypedEventFilter<UnstakeEvent>;
 
 export interface TokenStakingContract extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -439,9 +413,7 @@ export interface TokenStakingContract extends BaseContract {
 
     DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<[string]>;
 
-    MATIC_STAKER_ROLE(overrides?: CallOverrides): Promise<[string]>;
-
-    R_STAKER_ROLE(overrides?: CallOverrides): Promise<[string]>;
+    STAKER_ROLE(overrides?: CallOverrides): Promise<[string]>;
 
     allowance(
       owner: PromiseOrValue<string>,
@@ -501,13 +473,15 @@ export interface TokenStakingContract extends BaseContract {
 
     numberOfStakers(overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    r_token(overrides?: CallOverrides): Promise<[string]>;
+
     renounceRole(
       role: PromiseOrValue<BytesLike>,
       account: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    restakeR(
+    restake(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -517,12 +491,8 @@ export interface TokenStakingContract extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    stakeMatic(
+    stake(
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    stakeR(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     supportsInterface(
@@ -551,12 +521,8 @@ export interface TokenStakingContract extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    unstakeMatic(
+    unstake(
       _amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    unstakeR(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -578,9 +544,7 @@ export interface TokenStakingContract extends BaseContract {
 
   DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
 
-  MATIC_STAKER_ROLE(overrides?: CallOverrides): Promise<string>;
-
-  R_STAKER_ROLE(overrides?: CallOverrides): Promise<string>;
+  STAKER_ROLE(overrides?: CallOverrides): Promise<string>;
 
   allowance(
     owner: PromiseOrValue<string>,
@@ -640,13 +604,15 @@ export interface TokenStakingContract extends BaseContract {
 
   numberOfStakers(overrides?: CallOverrides): Promise<BigNumber>;
 
+  r_token(overrides?: CallOverrides): Promise<string>;
+
   renounceRole(
     role: PromiseOrValue<BytesLike>,
     account: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  restakeR(
+  restake(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -656,12 +622,8 @@ export interface TokenStakingContract extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  stakeMatic(
+  stake(
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  stakeR(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   supportsInterface(
@@ -690,12 +652,8 @@ export interface TokenStakingContract extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  unstakeMatic(
+  unstake(
     _amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  unstakeR(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -717,9 +675,7 @@ export interface TokenStakingContract extends BaseContract {
 
     DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
 
-    MATIC_STAKER_ROLE(overrides?: CallOverrides): Promise<string>;
-
-    R_STAKER_ROLE(overrides?: CallOverrides): Promise<string>;
+    STAKER_ROLE(overrides?: CallOverrides): Promise<string>;
 
     allowance(
       owner: PromiseOrValue<string>,
@@ -777,13 +733,15 @@ export interface TokenStakingContract extends BaseContract {
 
     numberOfStakers(overrides?: CallOverrides): Promise<BigNumber>;
 
+    r_token(overrides?: CallOverrides): Promise<string>;
+
     renounceRole(
       role: PromiseOrValue<BytesLike>,
       account: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    restakeR(overrides?: CallOverrides): Promise<void>;
+    restake(overrides?: CallOverrides): Promise<void>;
 
     revokeRole(
       role: PromiseOrValue<BytesLike>,
@@ -791,9 +749,7 @@ export interface TokenStakingContract extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    stakeMatic(overrides?: CallOverrides): Promise<void>;
-
-    stakeR(overrides?: CallOverrides): Promise<void>;
+    stake(overrides?: CallOverrides): Promise<void>;
 
     supportsInterface(
       interfaceId: PromiseOrValue<BytesLike>,
@@ -821,12 +777,10 @@ export interface TokenStakingContract extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    unstakeMatic(
+    unstake(
       _amount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    unstakeR(overrides?: CallOverrides): Promise<void>;
 
     userInfo(
       arg0: PromiseOrValue<string>,
@@ -887,11 +841,8 @@ export interface TokenStakingContract extends BaseContract {
       sender?: PromiseOrValue<string> | null
     ): RoleRevokedEventFilter;
 
-    "StakeMatic(uint256,address)"(
-      _amount?: null,
-      _user?: null
-    ): StakeMaticEventFilter;
-    StakeMatic(_amount?: null, _user?: null): StakeMaticEventFilter;
+    "Stake(uint256,address)"(_amount?: null, _user?: null): StakeEventFilter;
+    Stake(_amount?: null, _user?: null): StakeEventFilter;
 
     "Transfer(address,address,uint256)"(
       from?: PromiseOrValue<string> | null,
@@ -904,11 +855,11 @@ export interface TokenStakingContract extends BaseContract {
       value?: null
     ): TransferEventFilter;
 
-    "UnstakeMatic(uint256,address)"(
+    "Unstake(uint256,address)"(
       _amount?: null,
       _user?: null
-    ): UnstakeMaticEventFilter;
-    UnstakeMatic(_amount?: null, _user?: null): UnstakeMaticEventFilter;
+    ): UnstakeEventFilter;
+    Unstake(_amount?: null, _user?: null): UnstakeEventFilter;
   };
 
   estimateGas: {
@@ -916,9 +867,7 @@ export interface TokenStakingContract extends BaseContract {
 
     DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
 
-    MATIC_STAKER_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
-
-    R_STAKER_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
+    STAKER_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
 
     allowance(
       owner: PromiseOrValue<string>,
@@ -978,13 +927,15 @@ export interface TokenStakingContract extends BaseContract {
 
     numberOfStakers(overrides?: CallOverrides): Promise<BigNumber>;
 
+    r_token(overrides?: CallOverrides): Promise<BigNumber>;
+
     renounceRole(
       role: PromiseOrValue<BytesLike>,
       account: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    restakeR(
+    restake(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -994,12 +945,8 @@ export interface TokenStakingContract extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    stakeMatic(
+    stake(
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    stakeR(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     supportsInterface(
@@ -1028,12 +975,8 @@ export interface TokenStakingContract extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    unstakeMatic(
+    unstake(
       _amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    unstakeR(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -1052,9 +995,7 @@ export interface TokenStakingContract extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    MATIC_STAKER_ROLE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    R_STAKER_ROLE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    STAKER_ROLE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     allowance(
       owner: PromiseOrValue<string>,
@@ -1114,13 +1055,15 @@ export interface TokenStakingContract extends BaseContract {
 
     numberOfStakers(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    r_token(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     renounceRole(
       role: PromiseOrValue<BytesLike>,
       account: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    restakeR(
+    restake(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1130,12 +1073,8 @@ export interface TokenStakingContract extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    stakeMatic(
+    stake(
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    stakeR(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     supportsInterface(
@@ -1164,12 +1103,8 @@ export interface TokenStakingContract extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    unstakeMatic(
+    unstake(
       _amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    unstakeR(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

@@ -475,8 +475,8 @@
       ]
     },
     "C:\\Users\\user\\Desktop\\Proiecte\\Blockchain\\Final Project\\Staking-Smartcontract-Ethereum\\contracts\\TokenStakingContract.sol": {
-      "lastModificationDate": 1680687879912,
-      "contentHash": "9e5c6e9a9dc77e839712674d09dbe950",
+      "lastModificationDate": 1680870873531,
+      "contentHash": "aa5528ab8444fcc2159465602ebc0fdf",
       "sourceName": "contracts/TokenStakingContract.sol",
       "solcConfig": {
         "version": "0.8.18",
@@ -503,7 +503,8 @@
       },
       "imports": [
         "@openzeppelin/contracts/token/ERC20/ERC20.sol",
-        "@openzeppelin/contracts/access/AccessControl.sol"
+        "@openzeppelin/contracts/access/AccessControl.sol",
+        "./R_TokenContract.sol"
       ],
       "versionPragmas": [
         "^0.8.9"
@@ -875,6 +876,44 @@
       ],
       "artifacts": [
         "IERC165"
+      ]
+    },
+    "C:\\Users\\user\\Desktop\\Proiecte\\Blockchain\\Final Project\\Staking-Smartcontract-Ethereum\\contracts\\R_TokenContract.sol": {
+      "lastModificationDate": 1680860966388,
+      "contentHash": "94b1a616f2796f30d6a33ee716a05a6b",
+      "sourceName": "contracts/R_TokenContract.sol",
+      "solcConfig": {
+        "version": "0.8.18",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/ERC20.sol",
+        "@openzeppelin/contracts/access/AccessControl.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.9"
+      ],
+      "artifacts": [
+        "R_TokenContract"
       ]
     }
   }

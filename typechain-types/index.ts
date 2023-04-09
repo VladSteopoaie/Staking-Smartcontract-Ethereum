@@ -22,5 +22,7 @@ export type { IERC165 } from "./@openzeppelin/contracts/utils/introspection/IERC
 export { IERC165__factory } from "./factories/@openzeppelin/contracts/utils/introspection/IERC165__factory";
 export type { Lock } from "./contracts/Lock";
 export { Lock__factory } from "./factories/contracts/Lock__factory";
+export type { R_TokenContract } from "./contracts/R_TokenContract";
+export { R_TokenContract__factory } from "./factories/contracts/R_TokenContract__factory";
 export type { TokenStakingContract } from "./contracts/TokenStakingContract";
 export { TokenStakingContract__factory } from "./factories/contracts/TokenStakingContract__factory";
