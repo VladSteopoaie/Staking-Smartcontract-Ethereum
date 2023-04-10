@@ -78,7 +78,7 @@ describe("TokenStaking", async () => {
     ).to.be.equal(true);
 
     // Updated user info
-    console.log(await TokenStakingContract.userInfo(andy.address));
+    // console.log(await TokenStakingContract.userInfo(andy.address));
   });
 
   it("The user should stake multiple times", async () => {
@@ -86,15 +86,116 @@ describe("TokenStaking", async () => {
     await TokenStakingContract.connect(andy).stakeMatic({
       value: ethers.utils.parseEther("0.1"),
     });
-    console.log(await TokenStakingContract.userInfo(andy.address));
-    
     // Second staking
-    await time.increaseTo(1681984329);
+    
+    await time.increase(86400); // increase the time to 24h
     await TokenStakingContract.connect(andy).stakeMatic({
       value: ethers.utils.parseEther("0.15"),
     });
 
-    console.log(await TokenStakingContract.userInfo(andy.address));
+
+
+    // console.log(await TokenStakingContract.userInfo(andy.address));
+
+    await time.increase(86400 * 10); // increase the time to 24h * number of days
+    await TokenStakingContract.connect(andy).stakeMatic({
+      value: ethers.utils.parseEther("0.4"),
+    });
+
+    // Number of stakers should change
+    expect(await TokenStakingContract.numberOfStakers()).to.be.equal(1);
+
+    // console.log(await TokenStakingContract.userInfo(andy.address));
+  });
+  
+  it("The user shouldn't stake in the same day", async () => {
+    // First staking
+    await TokenStakingContract.connect(andy).stakeMatic({
+      value: ethers.utils.parseEther("0.1"),
+    });
+    // console.log(await TokenStakingContract.userInfo(andy.address));
+    
+    // Second staking
+    
+    await time.increase(86200); // increase the time to 24h
+    await expect(TokenStakingContract.connect(andy).stakeMatic({
+      value: ethers.utils.parseEther("0.15"),
+    })).to.be.revertedWith("You have to wait 1 day before you can stake!");
+    
+  });
+  
+  it("Multiple users should stake and receive rewards", async() => {
+    
+    await TokenStakingContract.connect(andy).stakeMatic({
+      value: ethers.utils.parseEther("0.1"),
+    });
+    
+    // console.log(await TokenStakingContract.userInfo(andy.address));
+    await TokenStakingContract.connect(bob).stakeMatic({
+      value: ethers.utils.parseEther("0.3"),
+    });
+    
+    await time.increase(86400 * 2);
+    await TokenStakingContract.connect(user).stakeMatic({
+      value: ethers.utils.parseEther("0.3"),
+    });
+    // Also testing the variables from the contract
+    expect(await TokenStakingContract.numberOfStakers()).to.be.equal(3);
+    expect(await TokenStakingContract.totalAmountStaked()).to.be.equal(ethers.utils.parseUnits("0.7"));
+
+
+    expect(await TokenStakingContract.connect(andy).viewRewards()).to.be.equal(ethers.utils.parseUnits("1400"));
+    expect(await TokenStakingContract.connect(bob).viewRewards()).to.be.equal(ethers.utils.parseEther("4200"))
+    expect(await TokenStakingContract.connect(user).viewRewards()).to.be.equal(ethers.utils.parseEther("0"));
+  });
+
+  it("Testing the unstake function", async () => {
+    await TokenStakingContract.connect(andy).stakeMatic({
+      value: ethers.utils.parseEther("10"),
+    });
+    await time.increase(86400 * 4);
+    await expect(TokenStakingContract.connect(andy).unstakeMatic(ethers.utils.parseEther("3")))
+    .emit(TokenStakingContract, "UnstakeMatic").withArgs(ethers.utils.parseEther("3"), andy.address);
+
+    expect(
+      await ethers.provider.getBalance(TokenStakingContract.address)
+    ).to.be.equals(ethers.utils.parseEther("7"));
+
+  });
+
+  it("Unstake errors", async() => {
+    // User shouldn't be able to unstake before staking
+    await expect (TokenStakingContract.connect(andy).unstakeMatic(ethers.utils.parseUnits("5")))
+    .reverted;
+
+    await TokenStakingContract.connect(andy).stakeMatic({
+      value: ethers.utils.parseEther("10"),
+    });
+    // User should't be able to unstake only after 24h
+    await expect (TokenStakingContract.connect(andy).unstakeMatic(ethers.utils.parseUnits("5")))
+    .revertedWith("You have to wait 1 day before you can unstake!");
+
+    await time.increase(86400 * 2);
+    
+    // Insuficient balance
+    await expect (TokenStakingContract.connect(andy).unstakeMatic(ethers.utils.parseUnits("11")))
+    .revertedWith("Insuficient balance!");
+    
+    // Amount must be greater than 0
+    await expect (TokenStakingContract.connect(andy).unstakeMatic(ethers.utils.parseUnits("0")))
+    .revertedWith("Nothing to unstake!");
+    
+    // User should not have the staker role after unstaking all the funds
+    await TokenStakingContract.connect(andy).unstakeMatic(ethers.utils.parseUnits("10"));
+
+    let Staker = ethers.utils.hexZeroPad(
+      await TokenStakingContract.MATIC_STAKER_ROLE(),
+      32
+    );
+    
+    expect(
+      await TokenStakingContract.hasRole(Staker, andy.address)
+    ).to.be.equal(false);
   });
 
 });

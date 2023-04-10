@@ -475,8 +475,8 @@
       ]
     },
     "C:\\Users\\user\\Desktop\\Proiecte\\Blockchain\\Final Project\\Staking-Smartcontract-Ethereum\\contracts\\TokenStakingContract.sol": {
-      "lastModificationDate": 1680870873531,
-      "contentHash": "aa5528ab8444fcc2159465602ebc0fdf",
+      "lastModificationDate": 1681114103512,
+      "contentHash": "b1a45d171cacabf5e3ba68e779711ecc",
       "sourceName": "contracts/TokenStakingContract.sol",
       "solcConfig": {
         "version": "0.8.18",

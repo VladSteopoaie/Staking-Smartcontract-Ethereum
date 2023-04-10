@@ -45,11 +45,13 @@ export interface TokenStakingContractInterface extends utils.Interface {
     "grantRole(bytes32,address)": FunctionFragment;
     "hasRole(bytes32,address)": FunctionFragment;
     "increaseAllowance(address,uint256)": FunctionFragment;
+    "lastUpdate()": FunctionFragment;
     "name()": FunctionFragment;
     "numberOfStakers()": FunctionFragment;
     "renounceRole(bytes32,address)": FunctionFragment;
     "restakeR()": FunctionFragment;
     "revokeRole(bytes32,address)": FunctionFragment;
+    "secondsInADay()": FunctionFragment;
     "stakeMatic()": FunctionFragment;
     "stakeR()": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
@@ -61,6 +63,7 @@ export interface TokenStakingContractInterface extends utils.Interface {
     "transferFrom(address,address,uint256)": FunctionFragment;
     "unstakeMatic(uint256)": FunctionFragment;
     "unstakeR()": FunctionFragment;
+    "userIndex(uint256)": FunctionFragment;
     "userInfo(address)": FunctionFragment;
     "viewRewards()": FunctionFragment;
   };
@@ -82,11 +85,13 @@ export interface TokenStakingContractInterface extends utils.Interface {
       | "grantRole"
       | "hasRole"
       | "increaseAllowance"
+      | "lastUpdate"
       | "name"
       | "numberOfStakers"
       | "renounceRole"
       | "restakeR"
       | "revokeRole"
+      | "secondsInADay"
       | "stakeMatic"
       | "stakeR"
       | "supportsInterface"
@@ -98,6 +103,7 @@ export interface TokenStakingContractInterface extends utils.Interface {
       | "transferFrom"
       | "unstakeMatic"
       | "unstakeR"
+      | "userIndex"
       | "userInfo"
       | "viewRewards"
   ): FunctionFragment;
@@ -159,6 +165,10 @@ export interface TokenStakingContractInterface extends utils.Interface {
     functionFragment: "increaseAllowance",
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
+  encodeFunctionData(
+    functionFragment: "lastUpdate",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "numberOfStakers",
@@ -172,6 +182,10 @@ export interface TokenStakingContractInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "revokeRole",
     values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "secondsInADay",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "stakeMatic",
@@ -212,6 +226,10 @@ export interface TokenStakingContractInterface extends utils.Interface {
     values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(functionFragment: "unstakeR", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "userIndex",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
   encodeFunctionData(
     functionFragment: "userInfo",
     values: [PromiseOrValue<string>]
@@ -260,6 +278,7 @@ export interface TokenStakingContractInterface extends utils.Interface {
     functionFragment: "increaseAllowance",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "lastUpdate", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "numberOfStakers",
@@ -271,6 +290,10 @@ export interface TokenStakingContractInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "restakeR", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "revokeRole", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "secondsInADay",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "stakeMatic", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "stakeR", data: BytesLike): Result;
   decodeFunctionResult(
@@ -300,6 +323,7 @@ export interface TokenStakingContractInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "unstakeR", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "userIndex", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "userInfo", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "viewRewards",
@@ -497,6 +521,8 @@ export interface TokenStakingContract extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    lastUpdate(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     name(overrides?: CallOverrides): Promise<[string]>;
 
     numberOfStakers(overrides?: CallOverrides): Promise<[BigNumber]>;
@@ -516,6 +542,8 @@ export interface TokenStakingContract extends BaseContract {
       account: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
+
+    secondsInADay(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     stakeMatic(
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
@@ -560,13 +588,18 @@ export interface TokenStakingContract extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    userIndex(
+      arg0: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
+
     userInfo(
       arg0: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber, BigNumber] & {
         amountStaked: BigNumber;
-        lastStakeDate: BigNumber;
+        lastStakedMatic: BigNumber;
         rewards: BigNumber;
       }
     >;
@@ -636,6 +669,8 @@ export interface TokenStakingContract extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  lastUpdate(overrides?: CallOverrides): Promise<BigNumber>;
+
   name(overrides?: CallOverrides): Promise<string>;
 
   numberOfStakers(overrides?: CallOverrides): Promise<BigNumber>;
@@ -655,6 +690,8 @@ export interface TokenStakingContract extends BaseContract {
     account: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
+
+  secondsInADay(overrides?: CallOverrides): Promise<BigNumber>;
 
   stakeMatic(
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
@@ -699,13 +736,18 @@ export interface TokenStakingContract extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  userIndex(
+    arg0: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
   userInfo(
     arg0: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<
     [BigNumber, BigNumber, BigNumber] & {
       amountStaked: BigNumber;
-      lastStakeDate: BigNumber;
+      lastStakedMatic: BigNumber;
       rewards: BigNumber;
     }
   >;
@@ -773,6 +815,8 @@ export interface TokenStakingContract extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    lastUpdate(overrides?: CallOverrides): Promise<BigNumber>;
+
     name(overrides?: CallOverrides): Promise<string>;
 
     numberOfStakers(overrides?: CallOverrides): Promise<BigNumber>;
@@ -790,6 +834,8 @@ export interface TokenStakingContract extends BaseContract {
       account: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    secondsInADay(overrides?: CallOverrides): Promise<BigNumber>;
 
     stakeMatic(overrides?: CallOverrides): Promise<void>;
 
@@ -828,13 +874,18 @@ export interface TokenStakingContract extends BaseContract {
 
     unstakeR(overrides?: CallOverrides): Promise<void>;
 
+    userIndex(
+      arg0: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
     userInfo(
       arg0: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber, BigNumber] & {
         amountStaked: BigNumber;
-        lastStakeDate: BigNumber;
+        lastStakedMatic: BigNumber;
         rewards: BigNumber;
       }
     >;
@@ -974,6 +1025,8 @@ export interface TokenStakingContract extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    lastUpdate(overrides?: CallOverrides): Promise<BigNumber>;
+
     name(overrides?: CallOverrides): Promise<BigNumber>;
 
     numberOfStakers(overrides?: CallOverrides): Promise<BigNumber>;
@@ -993,6 +1046,8 @@ export interface TokenStakingContract extends BaseContract {
       account: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
+
+    secondsInADay(overrides?: CallOverrides): Promise<BigNumber>;
 
     stakeMatic(
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
@@ -1035,6 +1090,11 @@ export interface TokenStakingContract extends BaseContract {
 
     unstakeR(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    userIndex(
+      arg0: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     userInfo(
@@ -1110,6 +1170,8 @@ export interface TokenStakingContract extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    lastUpdate(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     numberOfStakers(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -1129,6 +1191,8 @@ export interface TokenStakingContract extends BaseContract {
       account: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
+
+    secondsInADay(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     stakeMatic(
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
@@ -1171,6 +1235,11 @@ export interface TokenStakingContract extends BaseContract {
 
     unstakeR(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    userIndex(
+      arg0: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     userInfo(
