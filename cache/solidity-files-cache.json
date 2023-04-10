@@ -475,8 +475,8 @@
       ]
     },
     "C:\\Users\\user\\Desktop\\Proiecte\\Blockchain\\Final Project\\Staking-Smartcontract-Ethereum\\contracts\\TokenStakingContract.sol": {
-      "lastModificationDate": 1681114103512,
-      "contentHash": "b1a45d171cacabf5e3ba68e779711ecc",
+      "lastModificationDate": 1681156514907,
+      "contentHash": "e040e6796bee95ecd4bc5a0227f3542f",
       "sourceName": "contracts/TokenStakingContract.sol",
       "solcConfig": {
         "version": "0.8.18",
@@ -503,8 +503,7 @@
       },
       "imports": [
         "@openzeppelin/contracts/token/ERC20/ERC20.sol",
-        "@openzeppelin/contracts/access/AccessControl.sol",
-        "./R_TokenContract.sol"
+        "@openzeppelin/contracts/access/AccessControl.sol"
       ],
       "versionPragmas": [
         "^0.8.9"

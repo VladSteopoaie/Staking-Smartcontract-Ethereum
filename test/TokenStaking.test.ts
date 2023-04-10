@@ -45,8 +45,8 @@ describe("TokenStaking", async () => {
     ).to.be.equal(true);
   });
 
-  it("The owner should have minted the R_Tokens", async () => {
-    expect(await TokenStakingContract.balanceOf(owner.address)).to.be.equal(
+  it("The contract should have minted the R_Tokens", async () => {
+    expect(await TokenStakingContract.balanceOf(TokenStakingContract.address)).to.be.equal(
       BigInt("1022000000000000000000000")
     );
   });
@@ -149,6 +149,35 @@ describe("TokenStaking", async () => {
     expect(await TokenStakingContract.connect(user).viewRewards()).to.be.equal(ethers.utils.parseEther("0"));
   });
 
+  it("Testing the maximum stake amount", async() => {
+    await TokenStakingContract.connect(owner).stakeMatic({
+      value: ethers.utils.parseUnits("100")
+    });
+    time.increase(86400 * 2);
+    await TokenStakingContract.connect(bob).stakeMatic({
+      value: ethers.utils.parseUnits("300")
+    });
+    await TokenStakingContract.connect(andy).stakeMatic({
+      value: ethers.utils.parseUnits("250")
+    });
+    time.increase(86400 * 2);
+    await TokenStakingContract.connect(user).stakeMatic({
+      value: ethers.utils.parseUnits("250")
+    });
+    time.increase(86400 * 2);
+    await TokenStakingContract.connect(andy).stakeMatic({
+      value: ethers.utils.parseUnits("50")
+    });
+
+    await TokenStakingContract.connect(owner).unstakeMatic(ethers.utils.parseUnits("10"));
+    
+    time.increase(86400 * 2);
+    await expect (TokenStakingContract.connect(owner).stakeMatic({
+      value: ethers.utils.parseUnits("70")
+    }))
+      .revertedWith("The maximum staked amount has been exeeded!");
+  });
+
   it("Testing the unstake function", async () => {
     await TokenStakingContract.connect(andy).stakeMatic({
       value: ethers.utils.parseEther("10"),
@@ -160,6 +189,29 @@ describe("TokenStaking", async () => {
     expect(
       await ethers.provider.getBalance(TokenStakingContract.address)
     ).to.be.equals(ethers.utils.parseEther("7"));
+
+    // User should not have the staker role after unstaking all the funds
+    // And should have the claimer role
+    await time.increase(86400);
+    await TokenStakingContract.connect(andy).unstakeMatic(ethers.utils.parseUnits("7"));
+
+    let Staker = ethers.utils.hexZeroPad(
+      await TokenStakingContract.MATIC_STAKER_ROLE(),
+      32
+    );
+
+    let Claimer = ethers.utils.hexZeroPad(
+      await TokenStakingContract.CLAIMER_ROLE(),
+      32
+    );
+    
+    expect(
+      await TokenStakingContract.hasRole(Staker, andy.address)
+    ).to.be.equal(false);
+    
+    expect(
+      await TokenStakingContract.hasRole(Claimer, andy.address)
+    ).to.be.equal(true);
 
   });
 
@@ -185,17 +237,99 @@ describe("TokenStaking", async () => {
     await expect (TokenStakingContract.connect(andy).unstakeMatic(ethers.utils.parseUnits("0")))
     .revertedWith("Nothing to unstake!");
     
-    // User should not have the staker role after unstaking all the funds
-    await TokenStakingContract.connect(andy).unstakeMatic(ethers.utils.parseUnits("10"));
+    
+  });
 
-    let Staker = ethers.utils.hexZeroPad(
-      await TokenStakingContract.MATIC_STAKER_ROLE(),
+  it("Testing claimRewards function", async() => {
+    await TokenStakingContract.connect(andy).stakeMatic({
+      value: ethers.utils.parseEther("0.1"),
+    });
+    
+    // console.log(await TokenStakingContract.userInfo(andy.address));
+    await TokenStakingContract.connect(bob).stakeMatic({
+      value: ethers.utils.parseEther("0.2"),
+    });
+    
+    await time.increase(86400 * 2);
+    await TokenStakingContract.connect(user).stakeMatic({
+      value: ethers.utils.parseEther("0.4"),
+    });
+    
+    await TokenStakingContract.connect(andy).stakeMatic({
+      value: ethers.utils.parseEther("0.3"),
+    });
+    await time.increase(86400 * 10);
+
+    let rewardsAndy = await TokenStakingContract.connect(andy).viewRewards();
+    let rewardsBob = await TokenStakingContract.connect(bob).viewRewards();
+    let rewardsUser = await TokenStakingContract.connect(user).viewRewards();
+
+    await expect(TokenStakingContract.connect(andy).claimRewards())
+    .emit(TokenStakingContract, "ClaimRewards").withArgs(rewardsAndy, andy.address);
+    await expect(TokenStakingContract.connect(bob).claimRewards())
+    .emit(TokenStakingContract, "ClaimRewards").withArgs(rewardsBob, bob.address);
+    await expect(TokenStakingContract.connect(user).claimRewards())
+    .emit(TokenStakingContract, "ClaimRewards").withArgs(rewardsUser, user.address);
+
+    expect(await TokenStakingContract.balanceOf(andy.address)).to.be.equal(rewardsAndy);
+    expect(await TokenStakingContract.balanceOf(bob.address)).to.be.equal(rewardsBob);
+    expect(await TokenStakingContract.balanceOf(user.address)).to.be.equal(rewardsUser);
+
+    time.increase(86400 * 3);
+    // After unstake and claim user should not have claim role
+    await TokenStakingContract.connect(andy).unstakeMatic(ethers.utils.parseUnits("0.4"));
+    
+    await TokenStakingContract.connect(andy).claimRewards();
+
+    let Claimer = ethers.utils.hexZeroPad(
+      await TokenStakingContract.CLAIMER_ROLE(),
       32
     );
     
     expect(
-      await TokenStakingContract.hasRole(Staker, andy.address)
+      await TokenStakingContract.hasRole(Claimer, andy.address)
     ).to.be.equal(false);
+    
+
+
+  });
+
+  it("Claiming rewards errors", async() => {
+    // User cannot claim without staking
+    await expect(TokenStakingContract.connect(andy).claimRewards()).revertedWith("Not eligible to claim rewards!");
+    
+    // User cannot claim right after staking
+    await TokenStakingContract.connect(andy).stakeMatic({
+      value: ethers.utils.parseUnits("10")
+    });
+    time.increase(86380); // the limit is 24h after that the user can claim
+    await expect(TokenStakingContract.connect(andy).claimRewards()).revertedWith("No rewards to claim!");
+    
+    time.increase(300); // now the user can claim
+    await TokenStakingContract.connect(andy).claimRewards();
+    // user should not be able to claim right after another claim
+    await expect(TokenStakingContract.connect(andy).claimRewards()).revertedWith("No rewards to claim!");
+    
+    time.increase(86400 * 10);
+
+    await TokenStakingContract.connect(andy).unstakeMatic(ethers.utils.parseUnits("10"));
+
+    await TokenStakingContract.connect(andy).claimRewards();
+
+    await expect(TokenStakingContract.connect(andy).claimRewards()).revertedWith("Not eligible to claim rewards!");
+    time.increase(86400 * 7);
+    // if the user claims rewards and after unstakes, they should be able to claim once more but 0 rewards
+
+    await TokenStakingContract.connect(andy).stakeMatic({
+      value: ethers.utils.parseUnits("10")
+    });
+
+    time.increase(86400 * 10);
+
+    await TokenStakingContract.connect(andy).claimRewards();
+    await TokenStakingContract.connect(andy).unstakeMatic(ethers.utils.parseUnits("10"));
+    await expect(TokenStakingContract.connect(andy).claimRewards()).revertedWith("Not eligible to claim rewards!");
+
   });
 
 });
